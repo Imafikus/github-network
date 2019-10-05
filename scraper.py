@@ -17,11 +17,11 @@ class GithubNetworkSpider(scrapy.Spider):
             yield scrapy.Request(url = url, callback=self.parse)
 
     def parse(self, response):
-        #self.save_html_to_file(response)
-        self.extract_data_based_on_tags(response)
+        self.extract_current_user(response)
 
     
     def extract_data_based_on_tags(self, response):
+
         selected_names = Selector(response=response).css('span.f4.link-gray-dark').getall()
         selected_usernames = Selector(response=response).css('span.link-gray.pl-1').getall()
         
@@ -33,21 +33,9 @@ class GithubNetworkSpider(scrapy.Spider):
         for data in selected_usernames:
             extracted_usernames.append(self.extract_data_from_html(data))
         
-        print("EXTRACTED_NAMES ", extracted_names)
-        print("EXTRACTED_USERNNAMES ", extracted_usernames)
-
-
         combined_data = self.combine_name_and_username(extracted_names, extracted_usernames)
         print("COMBINED: ", combined_data)
-        # for data in selected_names:
-        #     print("SELECTED_NAMES: ", self.extract_data_from_html(data))
-        # print("LEN(SELECTED_NAMES)", len(selected_names))
-
-        # for data in selected_usernames:
-        #     print("SELECTED_USERNAMES: ", self.extract_data_from_html(data))
-        # print("LEN(SELECTED_USERNAMES)", len(selected_usernames))
-
-        # print("EQUAL: ",len(selected_names) == len(selected_usernames))
+        return combined_data
 
     def combine_name_and_username(self, names, usernames):
         combined_data = []
@@ -63,6 +51,9 @@ class GithubNetworkSpider(scrapy.Spider):
         return combined_data
 
     def extract_data_from_html(self, html_string):
+        """
+        Extract only name/ username from span tags received as html_string
+        """
         begin = '">'
         end = "</" 
 
@@ -91,4 +82,33 @@ class GithubNetworkSpider(scrapy.Spider):
         fname = fname.replace('/', '-')
         fname += self.HTML_EXT
         return fname
+    
+    def save_csv_data(self, response):
+        print("RESPONSE_URL", response.url)
+        combined_data = self.extract_data_based_on_tags(response)
+        if self.is_following_url(response.url):
+            self.create_csv_data(combined_data, True)
+        else:
+            self.create_csv_data(combined_data, following=False)
         
+    
+    def is_following_url(self, url):
+        return True if url.find('?tab=following') != -1 else False
+    
+    def create_csv_data(self, combined_data, following):
+        print('create_csv_data, following = ', following)
+
+    def extract_current_user(self, response):
+        selected_html_name = Selector(response=response).css('span.p-name.vcard-fullname.d-block.overflow-hidden').get()
+        selected_html_username = Selector(response=response).css('span.p-nickname.vcard-username.d-block').get()
+        
+
+        extracted_name = self.extract_data_from_html(selected_html_name)
+        extracted_username = self.extract_data_from_html(selected_html_username)
+
+        if extracted_name != " ":
+            current_user = extracted_username + " (" + extracted_name + ")"
+        else:
+            current_user = extracted_username
+        print("CURRENT_USER: ", current_user)
+        return current_user
