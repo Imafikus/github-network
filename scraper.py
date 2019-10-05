@@ -8,7 +8,10 @@ class GithubNetworkSpider(scrapy.Spider):
     HTML_EXT = '.html'
     
     def start_requests(self):
-        urls = ['https://github.com/Imafikus?tab=following']
+        urls = [
+            'https://github.com/Imafikus?tab=following',
+            'https://github.com/Imafikus?tab=followers',
+        ]
 
         for url in urls:
             yield scrapy.Request(url = url, callback=self.parse)
@@ -19,16 +22,25 @@ class GithubNetworkSpider(scrapy.Spider):
 
     
     def extract_data_based_on_tags(self, response):
-        selected_names = Selector(response=response).css('span.f4.link-gray-dark::text').getall()
-        selected_usernames = Selector(response=response).css('span.link-gray.pl-1::text').getall()
+        selected_names = Selector(response=response).css('span.f4.link-gray-dark').getall()
+        selected_usernames = Selector(response=response).css('span.link-gray.pl-1').getall()
         for data in selected_names:
-            print("SELECTED_NAMES: ", data)
+            print("SELECTED_NAMES: ", self.extract_names_from_html(data))
+        print("LEN(SELECTED_NAMES)", len(selected_names))
 
         for data in selected_usernames:
-            print("SELECTED_USERNAMES: ", data)
+            print("SELECTED_USERNAMES: ", self.extract_names_from_html(data))
+        print("LEN(SELECTED_USERNAMES)", len(selected_usernames))
 
 
         print("EQUAL: ",len(selected_names) == len(selected_usernames))
+    def extract_names_from_html(self, html_string):
+        begin = '">'
+        end = "</" 
+
+        s = html_string.find(begin) + len(begin)
+        e = html_string.find(end)
+        return html_string[s:e]
 
     def save_html_to_file(self, response):
         """
