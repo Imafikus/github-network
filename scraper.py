@@ -19,9 +19,16 @@ class GithubNetworkSpider(scrapy.Spider):
 
     
     def extract_data_based_on_tags(self, response):
-        selected_data = Selector(response=response).css('span.f4.link-gray-dark').getall()
-        for data in selected_data:
-            print("SELECTED_DATA: ", data)
+        selected_names = Selector(response=response).css('span.f4.link-gray-dark::text').getall()
+        selected_usernames = Selector(response=response).css('span.link-gray.pl-1::text').getall()
+        for data in selected_names:
+            print("SELECTED_NAMES: ", data)
+
+        for data in selected_usernames:
+            print("SELECTED_USERNAMES: ", data)
+
+
+        print("EQUAL: ",len(selected_names) == len(selected_usernames))
 
     def save_html_to_file(self, response):
         """
