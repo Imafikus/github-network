@@ -1,5 +1,6 @@
 import scrapy
 from scrapy.selector import Selector
+import html_parser as hp
 
 class GithubNetworkSpider(scrapy.Spider):
     name = 'github_scraper'
@@ -18,6 +19,7 @@ class GithubNetworkSpider(scrapy.Spider):
 
     def parse(self, response):
         self.extract_current_user(response)
+        self.extract_data_based_on_tags(response)
 
     
     def extract_data_based_on_tags(self, response):
