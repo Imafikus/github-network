@@ -7,14 +7,14 @@ MAX_DEPTH = 4
 
 class RecursiveGithubNetworkSpider(CrawlSpider):
     name = 'recursive_scraper'
+    
+    base_regex = r'(https:\/\/github.com\/)([^\/\?]+|.+\?tab=following|.+\?tab=followers)$'
     start_urls = [
             'https://github.com/Imafikus?tab=following',
             'https://github.com/Imafikus?tab=followers',
         ]
     rules = [
-    #    Rule(LinkExtractor(allow=('(https:\/\/github.com\/)\w+(\?tab=following|\?tab=followers)',)), callback='parse', follow=True),
-            # Rule(LinkExtractor(allow = r'(https:\/\/github.com\/)\w+(?!\/)'), callback='parse', follow=True),
-            Rule(LinkExtractor(allow = r'(https:\/\/github.com\/)[^\/]+$'), callback='parse_item', follow=True),
+            Rule(LinkExtractor(allow = base_regex), callback='parse_item', follow=True),
         
         ]
 
