@@ -8,7 +8,7 @@ MAX_DEPTH = 4
 class RecursiveGithubNetworkSpider(CrawlSpider):
     name = 'recursive_scraper'
     
-    base_regex = r'(https:\/\/github.com\/)([^\/\?]+|.+\?tab=following|.+\?tab=followers)$'
+    base_regex = '(https:\/\/github.com\/)([^\/\?]+|.+\?tab=following|.+\?tab=followers)$'
     start_urls = [
             'https://github.com/Imafikus?tab=following',
             'https://github.com/Imafikus?tab=followers',
