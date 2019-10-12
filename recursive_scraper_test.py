@@ -14,7 +14,7 @@ class RecursiveGithubNetworkSpider(CrawlSpider):
     rules = [
     #    Rule(LinkExtractor(allow=('(https:\/\/github.com\/)\w+(\?tab=following|\?tab=followers)',)), callback='parse', follow=True),
             # Rule(LinkExtractor(allow = r'(https:\/\/github.com\/)\w+(?!\/)'), callback='parse', follow=True),
-            Rule(LinkExtractor(allow = r'(https:\/\/github.com\/)\w+(?!\/)'), callback='parse_item', follow=True),
+            Rule(LinkExtractor(allow = r'(https:\/\/github.com\/)[^\/]+$'), callback='parse_item', follow=True),
         
         ]
 
