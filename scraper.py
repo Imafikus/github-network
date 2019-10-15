@@ -18,6 +18,7 @@ class GithubNetworkSpider(scrapy.Spider):
             yield scrapy.Request(url = url, callback=self.parse)
 
     def parse(self, response):
+        print('CURRENT_PAGE_URL: ', response.request.url)
         self.extract_current_user(response)
         self.extract_data_based_on_tags(response)
 
