@@ -1,6 +1,7 @@
 from requests_html import HTMLSession
 
 import data_extractor as de
+import csv_builder as cb
 
 def get_page_from_url(url):
     
@@ -16,9 +17,8 @@ def main():
     usernames = de.extract_usernames(site_data)
     fullnames = de.extract_fullnames(site_data)
 
-    print("Usernames: ", usernames)
-    print("Fullnames: ", fullnames)
-
+    pairs = cb.create_username_name_pairs(usernames, fullnames)
+    print("Pairs: ", pairs)
 
 if __name__ == "__main__":
     main()
