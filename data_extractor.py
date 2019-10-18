@@ -1,6 +1,4 @@
 import re
-
-
 def extract_usernames(html):
     """
     Extracts usernames from span tag in html. Tags are in the following format:
