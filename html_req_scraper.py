@@ -18,10 +18,27 @@ def get_page_from_url(url):
     return res.text
 
 def create_pair(source, target):
+    """
+    Creates source target pairs for saving to json
+    """
+    print('create_pair {} - {}'.format(source, target))
     if source not in pairs.keys():
         pairs[source] = target
 
+def is_followers_tab(url):
+    if url.find('?tab=followers') != -1:
+        return True 
+    return False
+
+
 def scrape(url, current_user, recursion_depth):
+    """
+    Main scraping function:
+
+    url - target url
+    current_user - current user
+    recursion_depth - represents a limit for scrape
+    """
     if(recursion_depth == MAX_RECURSION_DEPTH):
         return
     
@@ -29,12 +46,15 @@ def scrape(url, current_user, recursion_depth):
     urls = []
 
     usernames = de.extract_usernames(site_data)
-    # fullnames = de.extract_fullnames(site_data)
 
     for username in usernames:
         urls.append(url_builder.create_url_for_followers_tab(username))
-        create_pair(username, current_user)
-        # urls.append(url_builder.create_url_for_following_tab(username))
+        urls.append(url_builder.create_url_for_following_tab(username))
+        
+        if is_followers_tab(url):
+            create_pair(username, current_user)
+        else:
+            create_pair(current_user, username)
 
     print('URLS')
     for url in urls:
@@ -50,6 +70,7 @@ def main():
     for url in start_urls:
         scrape(url, 'Imafikus', 0)
 
+    print('PAIRS SIZE: ', len(pairs))
     json_builder.save_to_file('test.json', pairs)
 
 if __name__ == "__main__":
