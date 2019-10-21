@@ -1,14 +1,13 @@
 from requests_html import HTMLSession
 
 import data_extractor as de
-import csv_builder as cb
+import csv_builder
 import url_builder
-import json_builder
 
 
 MAX_RECURSION_DEPTH = 4
 
-pairs = {}
+pairs = []
 
 def get_page_from_url(url):
     
@@ -22,8 +21,8 @@ def create_pair(source, target):
     Creates source target pairs for saving to json
     """
     print('create_pair {} - {}'.format(source, target))
-    if source not in pairs.keys():
-        pairs[source] = target
+    if (source, target) not in pairs:
+        pairs.append((source, target))
 
 def is_followers_tab(url):
     if url.find('?tab=followers') != -1:
@@ -70,8 +69,8 @@ def main():
     for url in start_urls:
         scrape(url, 'Imafikus', 0)
 
-    print('PAIRS SIZE: ', len(pairs))
-    json_builder.save_to_file('test.json', pairs)
+    print('PAIRS: ', pairs)
+    csv_builder.save_to_file('test', pairs)
 
 if __name__ == "__main__":
     main()
