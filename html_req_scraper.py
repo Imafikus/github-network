@@ -3,6 +3,10 @@ from requests_html import HTMLSession
 import data_extractor as de
 import csv_builder
 import url_builder
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 
 MAX_RECURSION_DEPTH = 4
@@ -20,7 +24,7 @@ def create_pair(source, target):
     """
     Creates source target pairs for saving to json
     """
-    print('create_pair {} - {}'.format(source, target))
+    logger.debug('create_pair {} - {}'.format(source, target))
     if (source, target) not in pairs:
         pairs.append((source, target))
 
@@ -38,7 +42,8 @@ def scrape(url, current_user, recursion_depth):
     current_user - current user
     recursion_depth - represents a limit for scrape
     """
-    if(recursion_depth == MAX_RECURSION_DEPTH):
+    logger.debug('scrape with recursion_depth = {}'.format(recursion_depth))
+    if recursion_depth == MAX_RECURSION_DEPTH:
         return
     
     site_data = get_page_from_url(url)
@@ -55,11 +60,6 @@ def scrape(url, current_user, recursion_depth):
         else:
             create_pair(current_user, username)
 
-    print('URLS')
-    for url in urls:
-        print(url)
-
-
 def main():
     start_urls = [
         'https://github.com/Imafikus?tab=following',
@@ -69,7 +69,6 @@ def main():
     for url in start_urls:
         scrape(url, 'Imafikus', 0)
 
-    print('PAIRS: ', pairs)
     csv_builder.save_to_file('test', pairs)
 
 if __name__ == "__main__":
