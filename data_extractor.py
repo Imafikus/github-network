@@ -32,5 +32,19 @@ def extract_fullnames(html):
 
     return fullnames
 
+def extract_username_from_url(url):
+    """
+    Extract username from the following / followers url
+    """
+    logger.debug('extracting username from: {}'.format(url))
+    regex = re.compile(r'https://github.com/(?P<username>.*)\?tab=(following|followers)')
+    m = regex.search(url)
+    logger.debug('match = {}'.format(m))
+    username = m.group('username')
+    return username
+
+
+
 if __name__ == "__main__":
-    pass
+    print(type(('https://github.com/birantaltinel?tab=following')))
+    print(type(('https://github.com/birantaltinel?tab=followers')))
