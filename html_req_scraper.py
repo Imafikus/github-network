@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
-MAX_RECURSION_DEPTH = 1
+MAX_RECURSION_DEPTH = 3
 
 pairs = []
 

@@ -3,3 +3,5 @@
 *.html
 dump.txt
 test.*
+*.gephi
+./vscode
